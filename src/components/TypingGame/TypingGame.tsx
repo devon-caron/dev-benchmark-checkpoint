@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './TypingGame.css'; // Import CSS file for styling
 import { CourierLetter } from '../Letter/CourierLetter';
-import { ThemeContext } from '@/context/ThemeContext';
+import { ThemeContext, ThemeContextFields } from '@/context/ThemeContext';
 
 // codified props required for component
 interface TypingGameProps {
@@ -12,12 +12,17 @@ const LetterProvider: React.FC<{ text: string, currentIndex: number }> = (props)
 
     const [textState, setTextState] = React.useState(props.text);
     const [currIndexState, setCurrIndexState] = React.useState(props.currentIndex);
-    const themeContext = React.useContext(ThemeContext);
+    const themeContext = React.useContext(ThemeContext) as ThemeContextFields;
+    const [myTheme, setMyTheme] = React.useState(themeContext.theme);
 
     React.useEffect(() => {
         setTextState(props.text);
         setCurrIndexState(props.currentIndex);
     }, [props.text, props.currentIndex]);
+
+    React.useEffect(() => {
+        setMyTheme(themeContext.theme);
+    }, [themeContext.theme]);
 
     return (
         <>
@@ -27,10 +32,10 @@ const LetterProvider: React.FC<{ text: string, currentIndex: number }> = (props)
                         key={ `index: ${ index }, char: ${ char }` }
                         index={ index }
                         currentIndex={ currIndexState } 
-                        letterColor={ themeContext?.theme === "light" ? "black" : "white" }
-                        highlightedLetterColor={ themeContext?.theme === "light" ? "black" : "white" }
+                        letterColor={ myTheme === "light" ? "white" : "black" }
+                        highlightedLetterColor={ myTheme === "light" ? "black" : "white" }
                         alreadyTypedColor="red"
-                        initBlinkerColor={ themeContext?.theme === "light" ? "white" : "darkgray"}
+                        initBlinkerColor={ myTheme === "light" ? "white" : "darkgray"}
                     >
                         { char }
                     </CourierLetter>
